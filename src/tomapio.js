@@ -1,11 +1,13 @@
 tomapio.Tomapio = (function(win, undefined){
 
-    var Constructor = function(googleMaps){
+    var Constructor = function(googleMaps, reporterFunction){
 
         var _this = this;
 
         _.extend(this, {
-            _reporters: [new tomapio.ConsoleReporter()],
+            _reporters: [new tomapio.ExternalReporter({
+                reporter: reporterFunction || _.noop
+            })],
             _trackers: []
         });
 

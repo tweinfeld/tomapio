@@ -87,6 +87,12 @@ _.once = function(func){
     };
 };
 
+_.token = function(length){
+    var CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for(var i=0, os=[]; i < (length || 5); i++, os.push(CHARSET.charAt(Math.round(Math.random()*CHARSET.length)))){};
+    return os.join('');
+};
+
 _.Events = {
     on: function(eventName, func){
         (function(eventsHash){

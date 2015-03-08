@@ -17,8 +17,10 @@
             disableDefaultUI: true
         });
 
-        var tracker = new tomapio.Tomapio();
-        tracker.registerMap('dpofispdoiof', map);
+        var tracker = new tomapio.Tomapio({
+            id: "ABCDE",
+            map: map
+        }, console.log.bind(console));
 
     </script>
 </body>
