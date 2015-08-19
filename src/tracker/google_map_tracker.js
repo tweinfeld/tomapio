@@ -98,9 +98,8 @@ tomapio.GoogleMapTracker = (function(win, undefined){
             baseEvent,
             boundsEvent,
             function(map){
-                var bounds = map.getBounds();
                 return {
-                    "type": "map_focus"
+                    "type": "map_move"
                 };
             }
         ],
@@ -110,25 +109,6 @@ tomapio.GoogleMapTracker = (function(win, undefined){
                 return {
                     "type": "map_zoom",
                     "level": map.zoom
-                }
-            }
-        ],
-        "idle": [
-            baseEvent,
-            boundsEvent,
-            function(map){
-                return {
-                    "type": "map_idle",
-                    "zoom": map.getZoom()
-                }
-            }
-        ],
-        "maptypeid_changed": [
-            baseEvent,
-            function(map, eventData){
-                return {
-                    "type": "map_type_change",
-                    "map_type": map.getMapTypeId()
                 }
             }
         ]
@@ -141,6 +121,32 @@ tomapio.GoogleMapTracker = (function(win, undefined){
             _map: undefined
         });
 
+        this._dispatcher = (function(){
+            var STATES = {
+                SCAN: function(map, eventData, eventName){
+                    var _this = this;
+                    eventName === "idle" && (function(){
+                        currentState = STATES.DISPATCH;
+                        _(["zoom_changed", "bounds_changed"]).map(_.partial(currentState, [map, {}, _], _this));
+                    })();
+                },
+                DISPATCH: function(map, eventData, eventName){
+                    var nEvent = _(eventMappers[eventName] || []).reduce(function(a, f){
+                        a = _.extend(a || {}, f(map, eventData, eventName));
+                        return a;
+                    }, null);
+
+                    nEvent && this.trigger('publish', nEvent);
+                }
+            };
+
+            var currentState = STATES.SCAN;
+
+            return function(){
+                currentState.apply(this, _(arguments).toArray());
+            }
+        })();
+
         this.setMap(options["map"]);
     };
 
@@ -149,14 +155,7 @@ tomapio.GoogleMapTracker = (function(win, undefined){
             var _this = this;
             _(this._mapEventListeners).map(removeListener);
             !!(this._map = map) && (this._mapEventListeners = _(GOOGLE_MAP_EVENTS).map(function(eventName){
-                return addListener(map, eventName, function(eventData){
-                    var nEvent = _(eventMappers[eventName] || []).reduce(function(a, f){
-                        a = _.extend(a || {}, f(map, eventData, eventName));
-                        return a;
-                    }, null);
-
-                    nEvent && _this.trigger('publish', nEvent);
-                });
+                return addListener(map, eventName, _.partial(_this._dispatcher, [map, _, eventName], _this));
             }).value());
         }
     }, _.Events);
