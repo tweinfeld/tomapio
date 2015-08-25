@@ -1,5 +1,6 @@
-# tomapio
-User-Map interaction tracker
+![Tomapio Logo](http://tomap.io/wp-content/themes/html5blank-stable/img/tomapio_gray_transparent.png)
+
+The User-Map interaction tracker
 
 ## What is it?
 
