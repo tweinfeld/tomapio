@@ -1,9 +1,9 @@
 # tomapio
-Map-User interaction logger
+User-Map interaction tracker
 
 ## What is it?
 
-Tomapio is a user-interaction event tracker for use in conjunction with your application's geographical maps or charts. Tomapio normalizes events from multiple Map vendors, as well as from standard DOM and allows for custom plugins to be added.
+Tomapio is a user->map tracker for observing user interactions with your Application's maps & charts. Tomapio normalizes events from multiple sources such as Google-Maps and standard DOM events, and supports custom plugins to be manually defined.
 
 Tomapio provides the following events "out of the box":
 
@@ -32,12 +32,10 @@ Tomapio provides the following events "out of the box":
       var tracker = new tomapio.Tomapio({
           id: "ABCDE",
           map: map
-      }, console.log.bind(console));
+      }, eventsListener);
     ```
     Where:
     
     * `id` - Tomapio supports tracking of multiple maps concurrently. Events triggered from Tomapio will be sent along with `id` as the identifier of their source.
     * `map` - The map instance to track    
-    
-
-
+    * `eventsListener(event)` - A function that receives the tracker events
