@@ -39,3 +39,11 @@ Tomapio provides the following events "out of the box":
     * `id` - Tomapio supports tracking of multiple maps concurrently. Events triggered from Tomapio will be sent along with `id` as the identifier of their source.
     * `map` - The map instance to track    
     * `eventsListener(event)` - A function that receives the tracker events
+    
+ ## How to add additional maps?
+ 
+ Use the following method:
+ 
+ ```javascript
+ tracker.registerMap(id, map)
+ ```
